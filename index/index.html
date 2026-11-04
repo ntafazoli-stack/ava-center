@@ -1,42 +1,150 @@
-<meta name="google-site-verification" content="cB_JPUSz8w9LYc0mT9GN4WVMN_U47kqmpT0P9I086Zg" />
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آوای سنتر | لوازم جانبی موبایل</title>
+    <title>آوا سنتر | فروشگاه آنلاین</title>
     <style>
-        body { font-family: Tahoma, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
-        header { background: #2c3e50; color: #fff; padding: 20px; text-align: center; }
-        .hero { background: #34495e; color: #fff; padding: 60px 20px; text-align: center; }
-        .hero h1 { margin: 0; }
-        .btn { display: inline-block; background: #e74c3c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
-        .features { padding: 40px 20px; display: flex; justify-content: space-around; flex-wrap: wrap; }
-        .feature-box { background: white; padding: 20px; width: 200px; text-align: center; border-radius: 10px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 40px; }
+        body { font-family: Tahoma, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; }
+        header { background-color: #2c3e50; color: white; padding: 15px; text-align: center; }
+        .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; max-width: 1200px; margin: auto; }
+        .product { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin: 10px; padding: 15px; width: 250px; text-align: center; }
+        .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+        .product h3 { margin: 10px 0; font-size: 18px; }
+        .product .price { color: #e74c3c; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .controls button { background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .controls span { font-size: 16px; font-weight: bold; }
+        .add-to-cart { background-color: #27ae60; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .cart-btn { background-color: #d9654b; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; text-align: center; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .modal-content button { background-color: #27ae60; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
+    <header>
+        <h1>آوا سنتر</h1>
+        <p>تجربه‌ای متفاوت از خرید محصولات اصل و باکیفیت</p>
+    </header>
 
-<header>
-    <h2>آوا سنتر</h2>
-</header>
+    <div class="container" id="product-list">
+        <!-- محصولات شما اینجا قرار می‌گیرند -->
+    </div>
 
-<section class="hero">
-    <h1>به آوا سنتر خوش آمدید</h1>
-    <p>تجربه ای متفاوت از خرید محصولات اصل و باکیفیت</p>
-    <a href="#" class="btn">مشاهده محصولات</a>
-</section>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <button class="cart-btn" onclick="showCart()">مشاهده سبد خرید 🛒</button>
+    </div>
 
-<section class="features">
-    <div class="feature-box">✅ ضمانت اصالت</div>
-    <div class="feature-box">🚀 ارسال سریع</div>
-    <div class="feature-box"> مشاوره خرید</div>
-</section>
+    <!-- مودال سبد خرید و ثبت سفارش -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <h2>سبد خرید شما</h2>
+            <div id="cart-items"></div>
+            <p><strong>جمع کل: <span id="cart-total">0</span> تومان</strong></p>
+            <hr>
+            <h3>ثبت سفارش (بدون تماس)</h3>
+            <input type="text" id="name" placeholder="نام و نام خانوادگی" required>
+            <input type="text" id="phone" placeholder="شماره تماس" required>
+            <textarea id="address" placeholder="آدرس دقیق پستی" required></textarea>
+            <button onclick="submitOrder()">ثبت نهایی سفارش</button>
+            <button style="background:#e74c3c; margin-top:5px;" onclick="closeModal()">بستن</button>
+        </div>
+    </div>
 
-<footer>
-    <p>آوای سنتر - تمامی حقوق محفوظ است</p>
-</footer>
+    <script>
+        // --- تعریف محصولات (اینجا محصولات خود را جایگزین کنید) ---
+        // برای عکس‌ها: عکس را در گیت‌هاب آپلود کنید و لینک آن را اینجا بگذارید
+        const products = [
+            { id: 1, name: "محصول اول", price: 100000, img: "https://via.placeholder.com/250x150?text=Product+1" },
+            { id: 2, name: "محصول دوم", price: 200000, img: "https://via.placeholder.com/250x150?text=Product+2" },
+            { id: 3, name: "محصول سوم", price: 150000, img: "https://via.placeholder.com/250x150?text=Product+3" }
+        ];
 
+        let cart = {}; // سبد خرید
+
+        // --- نمایش محصولات در صفحه ---
+        const productList = document.getElementById('product-list');
+        products.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'product';
+            div.innerHTML = `
+                <img src="${p.img}" alt="${p.name}">
+                <h3>${p.name}</h3>
+                <div class="price">${p.price.toLocaleString()} تومان</div>
+                <div class="controls">
+                    <button onclick="updateQty(${p.id}, -1)">-</button>
+                    <span id="qty-${p.id}">0</span>
+                    <button onclick="updateQty(${p.id}, 1)">+</button>
+                </div>
+                <button class="add-to-cart" onclick="addToCart(${p.id})">افزودن به سبد</button>
+            `;
+            productList.appendChild(div);
+        });
+
+        // --- منطق سبد خرید ---
+        function updateQty(id, change) {
+            const current = cart[id] || 0;
+            const newQty = current + change;
+            if (newQty < 0) return;
+            cart[id] = newQty;
+            document.getElementById(`qty-${id}`).innerText = newQty;
+        }
+
+        function addToCart(id) {
+            if (!cart[id] || cart[id] === 0) {
+                cart[id] = 1;
+                document.getElementById(`qty-${id}`).innerText = 1;
+                alert('محصول به سبد اضافه شد!');
+            } else {
+                alert('این محصول در سبد شما موجود است.');
+            }
+        }
+
+        function showCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            let total = 0;
+            
+            for (const id in cart) {
+                if (cart[id] > 0) {
+                    const p = products.find(prod => prod.id == id);
+                    const itemTotal = p.price * cart[id];
+                    total += itemTotal;
+                    cartItems.innerHTML += `<p>${p.name} (x${cart[id]}) - ${itemTotal.toLocaleString()} تومان</p>`;
+                }
+            }
+            document.getElementById('cart-total').innerText = total.toLocaleString();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+
+        function submitOrder() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const total = document.getElementById('cart-total').innerText;
+
+            if (!name || !phone || !address) {
+                alert('لطفاً تمام اطلاعات را پر کنید.');
+                return;
+            }
+
+            // --- اینجا لینک فرم گوگل خود را قرار دهید ---
+            // 1. به forms.google.com بروید و یک فرم بسازید (نام، تلفن، آدرس، محصولات)
+            // 2. لینک فرم را در خط زیر جایگزین کنید:
+            const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLS.../viewform";
+
+            alert(`سفارش شما با موفقیت ثبت شد!\nنام: ${name}\nمبلغ: ${total} تومان\nبرای نهایی شدن، لطفاً به صفحه فرم سفارش هدایت می‌شوید.`);
+            
+            // انتقال به فرم گوگل
+            window.open(googleFormURL, '_blank');
+            closeModal();
+        }
+    </script>
 </body>
 </html>
