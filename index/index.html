@@ -6,10 +6,17 @@
     <title>آوا سنتر | فروشگاه آنلاین</title>
     <style>
         body { font-family: Tahoma, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; }
-        header { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 15px 0; }
+        
+        /* هدر */
+        header { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
         .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .logo { font-size: 24px; font-weight: bold; color: #2c3e50; text-decoration: none; }
-        .header-icons a { text-decoration: none; color: #333; font-size: 24px; }
+        
+        /* آیکون سبد خرید با شمارنده */
+        .cart-icon { position: relative; cursor: pointer; font-size: 28px; }
+        .cart-count { position: absolute; top: -5px; right: -10px; background: #e74c3c; color: white; font-size: 12px; font-weight: bold; border-radius: 50%; padding: 2px 6px; display: none; }
+
+        /* بخش محصول */
         .container { max-width: 1100px; margin: 40px auto; padding: 20px; display: flex; flex-wrap: wrap; gap: 30px; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .product-image { flex: 1; min-width: 300px; text-align: center; }
         .product-image img { max-width: 100%; height: auto; border-radius: 8px; }
@@ -18,21 +25,34 @@
         .product-desc { font-size: 15px; color: #444; margin-bottom: 20px; line-height: 1.8; text-align: justify; }
         .product-desc h3 { color: #2c3e50; margin-top: 20px; margin-bottom: 10px; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 5px;}
         .product-desc ul { padding-right: 20px; margin-top: 5px; }
+        
         .price-box { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
         .old-price { text-decoration: line-through; color: #999; font-size: 16px; margin-bottom: 5px; }
         .new-price { color: #e74c3c; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
         .discount-badge { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 14px; margin-right: 10px; }
-        
-        .btn-add { background-color: #27ae60; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.3s; text-decoration: none; box-sizing: border-box; }
+
+        .btn-add { background-color: #27ae60; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.3s; }
         .btn-add:hover { background-color: #219150; }
+
+        /* کادر سبد خرید (Bottom Sheet) */
+        .cart-modal { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; z-index: 1000; border-top-left-radius: 15px; border-top-right-radius: 15px; }
+        .cart-modal-content { max-width: 600px; margin: 0 auto; text-align: center; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+        .qty-controls { display: flex; align-items: center; gap: 10px; background: #f4f4f4; border-radius: 5px; padding: 5px 10px; }
+        .qty-controls button { background: none; border: none; font-size: 20px; cursor: pointer; color: #2c3e50; }
+        .qty-controls span { font-weight: bold; font-size: 16px; width: 20px; }
+        .total-price { font-size: 20px; font-weight: bold; color: #e74c3c; margin: 20px 0; }
+        .btn-checkout { background-color: #27ae60; color: white; border: none; padding: 15px; font-size: 18px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .close-cart { position: absolute; top: 10px; left: 15px; font-size: 24px; cursor: pointer; color: #999; }
     </style>
 </head>
 <body>
+
     <header>
         <div class="header-container">
             <a href="#" class="logo">آوا سنتر</a>
-            <div class="header-icons">
-                <a href="#">🛒</a>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 <span class="cart-count" id="cart-count">0</span>
             </div>
         </div>
     </header>
@@ -47,17 +67,14 @@
             
             <div class="product-desc">
                 <p>پیشگیری از ریزش مو ناشی از رژیم غذایی نامناسب یا سوء تغذیه، بهبود رویش و سلامت مو، پیشگیری از سوء تغذیه ناشی از مصرف داروهای دیگر و یا رژیم غذایی نامناسب.</p>
-                
                 <h3>موارد مصرف</h3>
                 <ul>
                     <li>جلوگیری از ریزش مو</li>
                     <li>ریزش مو</li>
                     <li>مقوی مو یا تقویت مو</li>
                 </ul>
-
                 <h3>دستور مصرف</h3>
                 <p>روزانه یک عدد قرص فولیکوژن ترجیحا صبح به همراه یک لیوان آب مصرف شود.</p>
-
                 <h3>مشخصات محصول</h3>
                 <ul>
                     <li><strong>نام دارو:</strong> فولیکوژن</li>
@@ -67,9 +84,8 @@
                     <li><strong>شرکت داروسازی:</strong> زیست اروند فارمد</li>
                     <li><strong>سایز فرآورده:</strong> قرص ۶۰ عددی</li>
                 </ul>
-
                 <h3>آثار فارماکولوژیک (اثرات دارویی)</h3>
-                <p>فولیکوژن یک مکمل غذایی تخصصی است که با هدف پیشگیری و درمان ریزش مو، بهبود رویش و سلامت مو و جبران سوءتغذیه ناشی از رژیم غذایی نامناسب یا مصرف داروها طراحی شده و توسط شرکت زیست اروند فارمد در ایران تولید می‌شود. این قرص فاقد گلوتن است و در بسته‌بندی ۶۰ عددی با قوطی پلاستیکی عرضه شده و برای افراد بالای ۱۲ سال مناسب است.</p>
+                <p>فولیکوژن یک مکمل غذایی تخصصی است که با هدف پیشگیری و درمان ریزش مو، بهبود رویش و سلامت مو و جبران سوءتغذیه ناشی از رژیم غذایی نامناسب یا مصرف داروها طراحی شده و توسط شرکت زیست اروند فارمد در ایران تولید می‌شود.</p>
             </div>
             
             <div class="price-box">
@@ -80,12 +96,78 @@
                 </div>
             </div>
 
-            <!-- دکمه خرید با لینک مستقیم به فرم گوگل -->
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdzlF5bEi19ue2rTKqm7HdayhgSYp4BPRhklgQCFwX7X-3OQ/viewform" target="_blank" class="btn-add">
-                🛒 ثبت سفارش و خرید
-            </a>
+            <button class="btn-add" onclick="addToCart(1300000, 'فولیکوژن')">
+                🛒 افزودن به سبد خرید
+            </button>
             
         </div>
     </div>
+
+    <!-- کادر سبد خرید (پایین صفحه) -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-modal-content">
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+            <h2>سبد خرید شما</h2>
+            <div class="cart-item">
+                <div>
+                    <strong>فولیکوژن</strong>
+                    <div style="font-size: 14px; color: #666; margin-top: 5px;">قیمت واحد: 1,300,000 تومان</div>
+                </div>
+                <div class="qty-controls">
+                    <button onclick="changeQty(-1)">-</button>
+                    <span id="qty-display">1</span>
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+            <div class="total-price">جمع کل: <span id="total-price-display">1,300,000</span> تومان</div>
+            
+            <!-- دکمه ثبت سفارش که باید به گوگل فرم لینک شود -->
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdA9RywZuVjN7UK5lYr7bYahcOyEf_QTddkEo8x-76-Qm7bzQ/viewform?usp=dialog" target="_blank" class="btn-checkout" style="text-decoration: none; display: block;">ثبت سفارش و پرداخت</a>
+        </div>
+    </div>
+
+    <script>
+        let cartQty = 1;
+        const unitPrice = 1300000; // قیمت واحد محصول
+
+        // تابع برای نمایش/مخفی کردن کادر سبد خرید
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+            }
+        }
+
+        // تابع برای افزودن به سبد خرید و نمایش عدد 1
+        function addToCart(price, name) {
+            cartQty = 1; // هر بار که دکمه زده می‌شود، تعداد 1 می‌شود
+            updateCartUI();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        // تابع برای تغییر تعداد با دکمه‌های + و -
+        function changeQty(change) {
+            cartQty += change;
+            if (cartQty < 1) cartQty = 1; // حداقل تعداد 1
+            updateCartUI();
+        }
+
+        // به‌روزرسانی عدد سبد خرید و قیمت کل
+        function updateCartUI() {
+            // نمایش عدد روی آیکون سبد
+            const countBadge = document.getElementById('cart-count');
+            countBadge.textContent = cartQty;
+            countBadge.style.display = 'block';
+
+            // نمایش تعداد در کادر
+            document.getElementById('qty-display').textContent = cartQty;
+
+            // محاسبه و نمایش قیمت کل
+            const total = cartQty * unitPrice;
+            document.getElementById('total-price-display').textContent = total.toLocaleString();
+        }
+    </script>
 </body>
 </html>
